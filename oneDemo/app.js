@@ -4,14 +4,31 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 var nunjucks = require('nunjucks');
 var axios = require('axios');
+var fs = require('fs');
 var app = express();
 
 nunjucks.configure('views', {
   autoescape: true,
   express: app
 });
+
+
+app.use(session({
+  secret: 'sessiontest',
+  resave: true,
+  saveUninitialized:true
+}));
+
+// uncomment after placing your favicon in /public
+//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
 /*var data;
 var url = 'https://api.weixin.qq.com/cgi-bin/poi/getpoilist?access_token=SwUezZjLhtfAurxDGuzpUW0IvxAwSb0EnVSLQ2UJ3lolsIcqaPVSeGfn9Tb7JrGpUWbq5QzsSBDQX57ls9ns5iBIh9Vtc-SLpU7aZUsfY3P8zvLaerj5wyZA41UcujGGKOMgAGDPTR'
@@ -25,6 +42,7 @@ axios.post(url, {
   .catch(function (error) {
     console.log(error);
   })*/
+
 var data = {
 "errcode":0,
 "errmsg":"ok",
@@ -100,31 +118,57 @@ var data = {
               }},
 ],
       "total_count":"3",
-}  
+}
+
+var rawInfo = fs.readFileSync(__dirname + '/data.json', {flag: 'r+', encoding: 'utf8'}, function(error, userinfo){
+  if(error){
+    console.log(error);
+  }
+  return userinfo;
+})
+
+var info = JSON.parse(rawInfo);
 
 app.get('/', function(req, res) {
   res.render('login.html');
 });
 
-app.get('/register', function(req, res) {
+app.post('/', function(req, res) {
+  var username = req.body.username;
+  var password = req.body.password;
+  if(!username||!password) {
+    res.render('login.html', {error: "username or password is empty"})
+  }
+  if(username===info.username&&password===info.password) {
+    req.session.user = info.username;
+    res.redirect('/index');
+  }
+  else{
+    res.render('login.html', {error: "incorrect username or password"});
+  }
+})
+
+/*app.get('/register', function(req, res) {
   res.render('register.html');
-});
+});*/
 
 app.get('/index', function(req, res) {
-	res.render('index.html',{data: data});
+  if(req.session.user){
+    res.render('index.html',{data: data});
+  }
+  else{
+    res.redirect('/');
+  }
 });
 
-app.get('/forgot-password', function(req, res) {
+/*app.get('/forgot-password', function(req, res) {
   res.render('forgot-password.html');
-});
+});*/
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.get('/logout', function(req, res){
+  res.redirect('/');
+  req.session.destroy();
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

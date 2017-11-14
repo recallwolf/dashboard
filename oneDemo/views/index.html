@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <title>SB Admin - Start Bootstrap Template</title>
+  <title>Dashboard</title>
   <!-- Bootstrap core CSS-->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
@@ -41,7 +41,7 @@
       <!-- Example DataTables Card-->
       <div class="card mb-3">
         <div class="card-header">
-          <i class="fa fa-table"></i> 会员卡统计</div>
+          <i class="fa fa-table"></i> 商家统计</div>
         <div class="card-body">
          {% include "table.html" %}
         </div>
@@ -69,7 +69,7 @@
     <script>
       var rawData = '{{data.business_list|dump|safe}}';
       var data = JSON.parse(rawData);
-      var viewModel = function(datax) {
+      var viewModel = function(data) {
         var self = this;
         self.businessList = ko.observableArray(data);
       }
