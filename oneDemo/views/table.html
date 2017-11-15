@@ -1,31 +1,31 @@
 <div class="table-responsive">
   <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
     <thead>
-    <tr>
+      <tr>
         <th>店名</th>
         <th>地址</th>
         <th>电话</th>
         <th>城市</th>
         <th>简介</th>
-    </tr>
+      </tr>
     </thead>
     <tbody data-bind="foreach: businessList">
-        <tr>
-            <td><p data-bind="text: base_info.business_name"></p></td>
-            <td><p data-bind="text: base_info.address"></p></td>
-            <td><p data-bind="text: base_info.telephone"></p></td>
-            <td><p data-bind="text: base_info.city"></p></td>
-            <td><p data-bind="text: base_info.introduction"></p></td>
-        </tr>
+      <tr>
+        <td><p data-bind="text: base_info.business_name"></p></td>
+        <td><p data-bind="text: base_info.address"></p></td>
+        <td><p data-bind="text: base_info.telephone"></p></td>
+        <td><p data-bind="text: base_info.city"></p></td>
+        <td><p data-bind="text: base_info.introduction"></p></td>
+      </tr>
     </tbody>
     <tfoot>
-    <tr>
+      <tr>
         <th>店名</th>
         <th>地址</th>
         <th>电话</th>
         <th>城市</th>
         <th>简介</th>
-    </tr>
+      </tr>
     </tfoot>
   </table>
 </div>

@@ -121,16 +121,21 @@ var data = {
 }
 
 var rawInfo = fs.readFileSync(__dirname + '/data.json', {flag: 'r+', encoding: 'utf8'}, function(error, userinfo){
-  if(error){
+  if(error) {
     console.log(error);
   }
   return userinfo;
-})
+});
 
 var info = JSON.parse(rawInfo);
 
 app.get('/', function(req, res) {
-  res.render('login.html');
+  if(req.session.user) {
+    res.redirect('/index');
+  }
+  else{
+    res.render('login.html');
+  }
 });
 
 app.post('/', function(req, res) {
@@ -140,10 +145,10 @@ app.post('/', function(req, res) {
     res.render('login.html', {error: "username or password is empty"})
   }
   if(username===info.username&&password===info.password) {
-    req.session.user = info.username;
+    req.session.user = info;
     res.redirect('/index');
   }
-  else{
+  else {
     res.render('login.html', {error: "incorrect username or password"});
   }
 })
@@ -153,10 +158,10 @@ app.post('/', function(req, res) {
 });*/
 
 app.get('/index', function(req, res) {
-  if(req.session.user){
+  if(req.session.user) {
     res.render('index.html',{data: data});
   }
-  else{
+  else {
     res.redirect('/');
   }
 });
@@ -165,7 +170,7 @@ app.get('/index', function(req, res) {
   res.render('forgot-password.html');
 });*/
 
-app.get('/logout', function(req, res){
+app.get('/logout', function(req, res) {
   res.redirect('/');
   req.session.destroy();
 });
